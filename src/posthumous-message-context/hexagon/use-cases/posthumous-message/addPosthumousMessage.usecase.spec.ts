@@ -1,10 +1,12 @@
 import { AddPosthumousMessage } from './addPosthumousMessage.usecase';
-import { PosthumousMessage } from './posthumousMessage';
-import { PosthumousMessageRepositoryStub } from './posthumousMessageRepositoryStub';
-import { PosthumousMessageFixtures } from './PosthumousMessage.fixture';
+import { PosthumousMessage } from '../../models/posthumousMessage';
+import { PosthumousMessageRepositoryStub } from '../../../adapters/secondary/gateways/repositories/testing/posthumousMessageRepositoryStub';
+import { PosthumousMessageFixtures } from '../../../../../test/fixtures/PosthumousMessage.fixture';
+import { DeterministicUuidGenerator } from '../../../adapters/secondary/gateways/uuid-generator/deterministic-uuid-generator';
 
 describe('add posthumous message', () => {
   let posthumousMessageRepository: PosthumousMessageRepositoryStub;
+  let uuidGenerator: DeterministicUuidGenerator;
 
   const aTitleLongEnough = 't'.repeat(25);
   const aTitleNotLongEnough = 't'.repeat(4);
@@ -15,6 +17,8 @@ describe('add posthumous message', () => {
 
   beforeEach(() => {
     posthumousMessageRepository = new PosthumousMessageRepositoryStub();
+    uuidGenerator = new DeterministicUuidGenerator();
+    uuidGenerator.nextUuid = '456def';
   });
 
   it('should add a posthumous message', async () => {
@@ -73,7 +77,7 @@ describe('add posthumous message', () => {
     );
 
     expect(
-      posthumousMessageRepository.findByUser(
+      posthumousMessageRepository.findAllByUserId(
         PosthumousMessageFixtures.johnDoe.userId,
       ),
     ).toEqual([new PosthumousMessage(PosthumousMessageFixtures.johnDoe)]);
@@ -85,12 +89,10 @@ describe('add posthumous message', () => {
     text: string,
     emails: string[],
   ): Promise<void> => {
-    return new AddPosthumousMessage(posthumousMessageRepository).execute(
-      userId,
-      title,
-      text,
-      emails,
-    );
+    return new AddPosthumousMessage(
+      posthumousMessageRepository,
+      uuidGenerator,
+    ).execute(userId, title, text, emails);
   };
 
   const expectPosthumousMessages = (

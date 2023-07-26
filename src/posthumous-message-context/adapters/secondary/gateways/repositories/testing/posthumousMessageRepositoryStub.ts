@@ -1,16 +1,19 @@
-import { PosthumousMessage } from './posthumousMessage';
+import { PosthumousMessage } from '../../../../../hexagon/models/posthumousMessage';
+import { PosthumousMessageRepository } from '../../../../../hexagon/gateways/repositories/posthumousMessageRepository';
 
-export class PosthumousMessageRepositoryStub {
+export class PosthumousMessageRepositoryStub
+  implements PosthumousMessageRepository
+{
   private _posthumousMessages: PosthumousMessage[] = [];
 
-  save(message: PosthumousMessage) {
+  async save(message: PosthumousMessage) {
     this._posthumousMessages.push(message);
   }
   findAll() {
     return this._posthumousMessages;
   }
 
-  findByUser(userId: string) {
+  async findAllByUserId(userId: string) {
     return this._posthumousMessages.filter(
       (posthumousMessage) => posthumousMessage.userId === userId,
     );

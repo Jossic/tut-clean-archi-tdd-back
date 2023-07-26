@@ -1,9 +1,11 @@
-import { PosthumousMessage } from './posthumousMessage';
-import { PosthumousMessageRepositoryStub } from './posthumousMessageRepositoryStub';
+import { PosthumousMessage } from '../../models/posthumousMessage';
+import { PosthumousMessageRepositoryStub } from '../../../adapters/secondary/gateways/repositories/testing/posthumousMessageRepositoryStub';
+import { UuidGenerator } from '../../gateways/uuid-generator/uuid-generator';
 
 export class AddPosthumousMessage {
   constructor(
     private readonly posthumousMessageRepository: PosthumousMessageRepositoryStub,
+    private readonly uuidGenerator: UuidGenerator,
   ) {}
 
   async execute(
@@ -16,7 +18,7 @@ export class AddPosthumousMessage {
     if (text.length <= 20) return;
 
     const posthumousMessage = PosthumousMessage.from(
-      '456def',
+      await this.uuidGenerator.generate(),
       userId,
       title,
       text,

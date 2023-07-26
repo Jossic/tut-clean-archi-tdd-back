@@ -1,4 +1,4 @@
-import { PosthumousMessageProps } from './posthumousMessage';
+import { PosthumousMessageProps } from '../../src/posthumous-message-context/hexagon/models/posthumousMessage';
 
 export type PosthumousMessageFixturesKey = 'johnDoe' | 'janeDoe';
 
