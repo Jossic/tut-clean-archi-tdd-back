@@ -5,12 +5,12 @@ import { PosthumousMessageRepositoryStub } from './posthumousMessageRepositorySt
 describe('add posthumous message', () => {
   let posthumousMessageRepository: PosthumousMessageRepositoryStub;
 
-  const aTitleLongEnough = 'Hello World!';
-  const aTitleNotLongEnough = 'Hello';
-  const aMessageLongEnough =
-    'My super message long enough to be a posthumous message!';
-  const aMessageNotLongEnough = 'Hello';
-  const someEmails = ['test@yopmail.com'];
+  const aTitleLongEnough = 't'.repeat(25);
+  const aTitleNotLongEnough = 't'.repeat(4);
+  const aTextLongEnough = 'a'.repeat(56);
+  const aTextNotLongEnough = 'a'.repeat(18);
+  const someGoodEmails = ['test@yopmail.com'];
+  const someWrongEmails = ['testyopmail.com'];
 
   beforeEach(() => {
     posthumousMessageRepository = new PosthumousMessageRepositoryStub();
@@ -19,16 +19,16 @@ describe('add posthumous message', () => {
   it('should add a posthumous message', async () => {
     await createAPosthumousMessage(
       aTitleLongEnough,
-      aMessageLongEnough,
-      someEmails,
+      aTextLongEnough,
+      someGoodEmails,
     );
 
     expectPosthumousMessages(
       new PosthumousMessage(
         '123abc',
         aTitleLongEnough,
-        aMessageLongEnough,
-        someEmails,
+        aTextLongEnough,
+        someGoodEmails,
       ),
     );
   });
@@ -36,12 +36,24 @@ describe('add posthumous message', () => {
   it('The title should have more than 5 characters', async () => {
     await createAPosthumousMessage(
       aTitleNotLongEnough,
-      aMessageLongEnough,
-      someEmails,
+      aTextLongEnough,
+      someGoodEmails,
     );
 
     expect(posthumousMessageRepository.findAll()).toEqual([]);
   });
+
+  it('The text should have more than 20 characters', async () => {
+    await createAPosthumousMessage(
+      aTitleLongEnough,
+      aTextNotLongEnough,
+      someGoodEmails,
+    );
+
+    expect(posthumousMessageRepository.findAll()).toEqual([]);
+  });
+
+  // Tester l'email
 
   const createAPosthumousMessage = async (
     title: string,
