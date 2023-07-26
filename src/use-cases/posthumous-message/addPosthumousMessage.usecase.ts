@@ -6,14 +6,10 @@ export class AddPosthumousMessage {
     private readonly posthumousMessageRepository: PosthumousMessageRepositoryStub,
   ) {}
 
-  async execute() {
+  async execute(title: string, text: string, emails: string[]): Promise<void> {
+    if (title.length <= 5) return;
     this.posthumousMessageRepository.save(
-      new PosthumousMessage(
-        '123abc',
-        'Hello World!',
-        'My super message long enough to be a posthumous message!',
-        ['test@yopmail.com'],
-      ),
+      new PosthumousMessage('123abc', title, text, emails),
     );
   }
 }
