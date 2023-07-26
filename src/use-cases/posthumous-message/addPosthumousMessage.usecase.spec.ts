@@ -1,6 +1,7 @@
 import { AddPosthumousMessage } from './addPosthumousMessage.usecase';
 import { PosthumousMessage } from './posthumousMessage';
 import { PosthumousMessageRepositoryStub } from './posthumousMessageRepositoryStub';
+import { PosthumousMessageFixtures } from './PosthumousMessage.fixture';
 
 describe('add posthumous message', () => {
   let posthumousMessageRepository: PosthumousMessageRepositoryStub;
@@ -18,23 +19,20 @@ describe('add posthumous message', () => {
 
   it('should add a posthumous message', async () => {
     await createAPosthumousMessage(
+      PosthumousMessageFixtures.johnDoe.userId,
       aTitleLongEnough,
       aTextLongEnough,
       someGoodEmails,
     );
 
     expectPosthumousMessages(
-      new PosthumousMessage(
-        '123abc',
-        aTitleLongEnough,
-        aTextLongEnough,
-        someGoodEmails,
-      ),
+      new PosthumousMessage(PosthumousMessageFixtures.johnDoe),
     );
   });
 
   it('The title should have more than 5 characters', async () => {
     await createAPosthumousMessage(
+      PosthumousMessageFixtures.johnDoe.userId,
       aTitleNotLongEnough,
       aTextLongEnough,
       someGoodEmails,
@@ -45,6 +43,7 @@ describe('add posthumous message', () => {
 
   it('The text should have more than 20 characters', async () => {
     await createAPosthumousMessage(
+      PosthumousMessageFixtures.johnDoe.userId,
       aTitleLongEnough,
       aTextNotLongEnough,
       someGoodEmails,
@@ -55,12 +54,39 @@ describe('add posthumous message', () => {
 
   // Tester l'email
 
+  it('The email should be valid', async () => {
+    //
+  });
+
+  // We should not be able to see others messages
+  it('should not be possible to display other users message', async () => {
+    //
+    posthumousMessageRepository.feedWith(
+      new PosthumousMessage(PosthumousMessageFixtures.janeDoe),
+    );
+
+    await createAPosthumousMessage(
+      PosthumousMessageFixtures.johnDoe.userId,
+      aTitleLongEnough,
+      aTextLongEnough,
+      someGoodEmails,
+    );
+
+    expect(
+      posthumousMessageRepository.findByUser(
+        PosthumousMessageFixtures.johnDoe.userId,
+      ),
+    ).toEqual([new PosthumousMessage(PosthumousMessageFixtures.johnDoe)]);
+  });
+
   const createAPosthumousMessage = async (
+    userId: string,
     title: string,
     text: string,
     emails: string[],
   ): Promise<void> => {
     return new AddPosthumousMessage(posthumousMessageRepository).execute(
+      userId,
       title,
       text,
       emails,

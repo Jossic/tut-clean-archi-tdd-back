@@ -44,7 +44,8 @@ Voici les critères du message :
 
 (Si on a le temps, possibilité d'ajouter un message audio ou vidéo)
 (Si on a le temps, possibilité d'ajouter un fichier au message texte)
-
+  
+Exemple de refacto : certains users s'amusent à mettre que des espaces pour le titre, il faut l'éviter.
 
 ## User Story - Créer un message
 

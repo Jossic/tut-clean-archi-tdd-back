@@ -6,11 +6,22 @@ export class AddPosthumousMessage {
     private readonly posthumousMessageRepository: PosthumousMessageRepositoryStub,
   ) {}
 
-  async execute(title: string, text: string, emails: string[]): Promise<void> {
+  async execute(
+    userId: string,
+    title: string,
+    text: string,
+    emails: string[],
+  ): Promise<void> {
     if (title.length <= 5) return;
     if (text.length <= 20) return;
-    this.posthumousMessageRepository.save(
-      new PosthumousMessage('123abc', title, text, emails),
+
+    const posthumousMessage = PosthumousMessage.from(
+      '456def',
+      userId,
+      title,
+      text,
+      emails,
     );
+    return this.posthumousMessageRepository.save(posthumousMessage);
   }
 }
